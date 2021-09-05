@@ -13,6 +13,7 @@ app.use(express.static(__dirname + '/public'));
 const port = process.env.PORT || 3000;
 const env = process.env.NODE_ENV || 'development';
 
+let animationInterval;
 let sequenceIndex = 0;
 const sequence = [
   [["red", "green", "blue"]],
@@ -31,7 +32,6 @@ http.listen(port, (err) => {
 
 // socket.io server
 io.on('connection', (socket) => {
-  let interval;
   console.log('Someone connected');
 
   // TODO: Update creator UI with list of connected pixels.
@@ -51,9 +51,9 @@ io.on('connection', (socket) => {
     sequenceIndex = (sequenceIndex + 1) % sequence.length;
   });
 
-  if (!interval) {
-    console.log("Interval", interval);
-    interval = setInterval(() => {
+  if (!animationInterval) {
+    console.log("Interval", animationInterval);
+    animationInterval = setInterval(() => {
       sequenceIndex = (sequenceIndex + 1) % sequence.length;
       console.log("Sequence Index", sequenceIndex);
       console.log("Socket Count", io.engine.clientsCount);
