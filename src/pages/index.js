@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { io } from "socket.io-client";
 
@@ -8,22 +8,37 @@ import Seo from "../components/seo";
 const socket = io("http://localhost:3000");
 
 const IndexPage = ({ location }) => {
+  const [color, setColor] = useState(undefined);
+
   const params = new URLSearchParams(location.search);
-  const rowIndex = params.get("r");
-  const colIndex = params.get("c");
+  const rowIndex = parseInt(params.get("r"));
+  const colIndex = parseInt(params.get("c"));
 
   useEffect(() => {
     console.log("Use effect", socket);
+    return () => socket.off('newFrame');
   }, []);
 
   socket.on("connect", () => {
+    console.log("Connected!");
     socket.emit("connectedPosition", {row: rowIndex, col: colIndex});
+  });
+
+  socket.once("newFrame", (data) => {
+    const { frame } = data;
+
+    console.log(frame[rowIndex][colIndex]);
+    console.log(rowIndex);
+
+    if (frame) {
+      setColor(frame[rowIndex][colIndex]);
+    }
   });
 
   return (
     <Layout>
       <Seo title="Home" />
-      <IndexPage.ColorBackground bgColor="green">
+      <IndexPage.ColorBackground bgColor={color}>
         <IndexPage.PositionDetails>
           <p>{`Row: ${rowIndex}, Col: ${colIndex}`}</p>
         </IndexPage.PositionDetails>

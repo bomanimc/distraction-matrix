@@ -13,6 +13,13 @@ app.use(express.static(__dirname + '/public'));
 const port = process.env.PORT || 3000;
 const env = process.env.NODE_ENV || 'development';
 
+let sequenceIndex = 0;
+const sequence = [
+  [["red", "green", "blue"]],
+  [["blue", "red", "green"]],
+  [["green", "blue", "red"]],
+];
+
 app.get('*', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
@@ -24,6 +31,7 @@ http.listen(port, (err) => {
 
 // socket.io server
 io.on('connection', (socket) => {
+  let interval;
   console.log('Someone connected');
 
   // TODO: Update creator UI with list of connected pixels.
@@ -36,5 +44,30 @@ io.on('connection', (socket) => {
     console.log(data);
     // lastPrediction = data;
     // socket.broadcast.emit('prediction', data);
+  });
+  
+  // TODO: Pull sequence data from frontend
+  socket.on('animationStep', (data) => {
+    sequenceIndex = (sequenceIndex + 1) % sequence.length;
+  });
+
+  if (!interval) {
+    console.log("Interval", interval);
+    interval = setInterval(() => {
+      sequenceIndex = (sequenceIndex + 1) % sequence.length;
+      console.log("Sequence Index", sequenceIndex);
+      console.log("Socket Count", io.engine.clientsCount);
+  
+      io.emit("newFrame", {
+        frame: sequence[sequenceIndex],
+      });
+    }, 2000);
+  } else {
+    console.log("Interval already set");
+  }
+  
+  socket.on('disconnect', () => {
+    console.log("Socket disconnected");
+    clearInterval(interval);
   });
 });
