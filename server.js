@@ -16,9 +16,9 @@ const env = process.env.NODE_ENV || 'development';
 let animationInterval;
 let sequenceIndex = 0;
 const sequence = [
-  [["red", "green", "blue"]],
-  [["blue", "red", "green"]],
-  [["green", "blue", "red"]],
+  [["red", "green", "blue"], ["yellow", "orange", "pink"]],
+  [["blue", "red", "green"], ["pink", "yellow", "orange"]],
+  [["green", "blue", "red"], ["orange", "pink", "yellow"]],
 ];
 
 app.get('*', (req, res) => {
@@ -65,9 +65,4 @@ io.on('connection', (socket) => {
   } else {
     console.log("Interval already set");
   }
-  
-  socket.on('disconnect', () => {
-    console.log("Socket disconnected");
-    clearInterval(interval);
-  });
 });
