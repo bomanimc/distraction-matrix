@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "gatsby";
-import { StaticImage } from "gatsby-plugin-image";
+import styled from "styled-components";
 import { io } from "socket.io-client";
 
 import Layout from "../components/layout";
@@ -24,23 +23,28 @@ const IndexPage = ({ location }) => {
   return (
     <Layout>
       <Seo title="Home" />
-      <h1>Hi people</h1>
-      <p>Welcome to your new Gatsby site.</p>
-      <p>Now go build something great.</p>
-      <StaticImage
-        src="../images/gatsby-astronaut.png"
-        width={300}
-        quality={95}
-        formats={["AUTO", "WEBP", "AVIF"]}
-        alt="A Gatsby astronaut"
-        style={{ marginBottom: `1.45rem` }}
-      />
-      <p>
-        <Link to="/page-2/">Go to page 2</Link> <br />
-        <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-      </p>
+      <IndexPage.ColorBackground bgColor="green">
+        <IndexPage.PositionDetails>
+          <p>{`Row: ${rowIndex}, Col: ${colIndex}`}</p>
+        </IndexPage.PositionDetails>
+      </IndexPage.ColorBackground>
     </Layout>
   );
 }
 
-export default IndexPage
+IndexPage.ColorBackground = styled.div`
+  flex: 1;
+  background: ${p => p.bgColor};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem;
+`;
+
+IndexPage.PositionDetails = styled.div`
+  color: white;
+  mix-blend-mode: difference;
+`;
+
+export default IndexPage;
