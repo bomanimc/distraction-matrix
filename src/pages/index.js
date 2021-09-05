@@ -8,10 +8,18 @@ import Seo from "../components/seo";
 
 const socket = io("http://localhost:3000");
 
-const IndexPage = () => {
+const IndexPage = ({ location }) => {
+  const params = new URLSearchParams(location.search);
+  const rowIndex = params.get("r");
+  const colIndex = params.get("c");
+
   useEffect(() => {
     console.log("Use effect", socket);
   }, []);
+
+  socket.on("connect", () => {
+    socket.emit("connectedPosition", {row: rowIndex, col: colIndex});
+  });
 
   return (
     <Layout>

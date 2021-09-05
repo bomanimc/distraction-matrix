@@ -25,8 +25,13 @@ http.listen(port, (err) => {
 // socket.io server
 io.on('connection', (socket) => {
   console.log('Someone connected');
-  // TODO: Update admin UI with list of connected pixels.
-  
+
+  // TODO: Update creator UI with list of connected pixels.
+  socket.on('connectedPosition', (data) => {
+    const {row, col} = data;
+    console.log(`Connected: r: ${row} c: ${col}`)
+  });
+
   socket.on('prediction', (data) => {
     console.log(data);
     // lastPrediction = data;
