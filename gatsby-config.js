@@ -7,7 +7,7 @@ module.exports = {
   },
   proxy: {
     prefix: "/socket",
-    url: "http://localhost:3000/",
+    url: "http://192.168.1.205:3000/",
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

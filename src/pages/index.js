@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import Layout from "../components/layout";
 import Seo from "../components/seo";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://192.168.1.205:3000");
 
 const IndexPage = ({ location }) => {
   const [color, setColor] = useState(undefined);

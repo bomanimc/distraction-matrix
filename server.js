@@ -3,7 +3,7 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:8000',
+    origin: ['http://localhost:8000', 'http://192.168.1.205:8000'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -16,9 +16,10 @@ const env = process.env.NODE_ENV || 'development';
 let animationInterval;
 let sequenceIndex = 0;
 const sequence = [
-  [["red", "green", "blue"], ["yellow", "orange", "pink"]],
-  [["blue", "red", "green"], ["pink", "yellow", "orange"]],
-  [["green", "blue", "red"], ["orange", "pink", "yellow"]],
+  [["#fc5c65", "#fd9644", "#fed330", "#26de81"], ["yellow", "orange", "pink"]],
+  [["#26de81", "#fc5c65", "#fd9644", "#fed330"], ["orange", "pink", "yellow"]],
+  [["#fed330", "#26de81", "#fc5c65", "#fd9644"], ["orange", "pink", "yellow"]],
+  [["#fd9644", "#fed330", "#26de81", "#fc5c65"], ["orange", "pink", "yellow"]],
 ];
 
 app.get('*', (req, res) => {
