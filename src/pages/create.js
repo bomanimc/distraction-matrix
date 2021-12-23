@@ -35,7 +35,6 @@ const CreatePage = () => {
 
   const onUpdateSelectedItemColor = (event) => {
     const color = event.target.value;
-    console.log('Color', color);
     const {row: selectedRow, col: selectedCol} = selectedGridItem;
     setColorForGridItem(selectedRow, selectedCol, color);
   };
@@ -108,13 +107,13 @@ CreatePage.AnimationGrid = styled.div`
   padding: .25rem;
 
   @media screen and (orientation: landscape) {
-    height: ${(p) => (p.smallMode ? '80vh' : '100vh')};
-    width: ${(p) => (p.smallMode ? '80vh' : '100vh')};;
+    height: ${(p) => (p.smallMode ? '80vh' : '80vh')};
+    width: ${(p) => (p.smallMode ? '80vh' : '80vh')};;
   }
 
   @media screen and (orientation: portrait) {
-    height: ${(p) => (p.smallMode ? '80vw' : '100vw')};;
-    width: ${(p) => (p.smallMode ? '80vw' : '100vw')};;
+    height: ${(p) => (p.smallMode ? '80vw' : '90vw')};;
+    width: ${(p) => (p.smallMode ? '80vw' : '90vw')};;
   }
 `;
 
