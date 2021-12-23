@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import cloneDeep from "lodash.clonedeep";
 
 import Layout from "../components/layout";
 import Seo from "../components/seo";
+import SequencePreviewer from "../components/SequencePreviewer";
 
 const CreatePage = () => {
   const rows = 3;
   const cols = 3;
-  const animationStep = 0;
 
   const createEmptyMatrix = (rows, cols) => [...new Array(rows)].map(() => new Array(cols));
   
   const getColorForGridItem = (row, col) => sequence[animationStep][row][col];
 
+  const [animationStep, setAnimationStep] = useState(0);
+
   const setColorForGridItem = (row, col, color) => {
-    const newSequence = [...sequence];
+    const newSequence = cloneDeep(sequence);
     newSequence[animationStep][row][col] = color;
     setSequence(newSequence);
   };
@@ -39,31 +42,51 @@ const CreatePage = () => {
     setColorForGridItem(selectedRow, selectedCol, color);
   };
 
+  const onAppendStep = () => {
+    // Copy the content of the last step into the new step.
+    const newSequence = [...cloneDeep(sequence), cloneDeep(sequence[sequence.length - 1])];
+    setSequence(newSequence);
+    setAnimationStep(newSequence.length - 1);
+  };
+
+  const onSelectStep = (stepIndex) => {
+    setAnimationStep(stepIndex);
+  };
+
   return (
     <Layout>
       <Seo title="Create" />
       <CreatePage.Container>
-        <CreatePage.AnimationGrid rows={rows} cols={cols}>
-          {
-            [...new Array(rows * cols)].map((_, idx) => {
-              const row = Math.floor(idx / rows);
-              const col = idx % cols;
-              const positionText = `[${row}, ${col}]`;
-              const isSelected = selectedGridItem.row === row && selectedGridItem.col === col;
+        <CreatePage.AnimationGridContainer>
+          <CreatePage.AnimationGrid rows={rows} cols={cols}>
+            {
+              [...new Array(rows * cols)].map((_, idx) => {
+                const row = Math.floor(idx / rows);
+                const col = idx % cols;
+                const positionText = `[${row}, ${col}]`;
+                const isSelected = selectedGridItem.row === row && selectedGridItem.col === col;
 
-              return (
-                <CreatePage.AnimationGridItem
-                  key={positionText}
-                  color={getColorForGridItem(row, col)}
-                  isSelected={isSelected} 
-                  onClick={() => onClickGridItem(row, col)}
-                >
-                  <span>{positionText}</span>
-                </CreatePage.AnimationGridItem>
-              );
-            })
-          }
-        </CreatePage.AnimationGrid>
+                return (
+                  <CreatePage.AnimationGridItem
+                    key={positionText}
+                    color={getColorForGridItem(row, col)}
+                    isSelected={isSelected} 
+                    onClick={() => onClickGridItem(row, col)}
+                  >
+                    <span>{positionText}</span>
+                  </CreatePage.AnimationGridItem>
+                );
+              })
+            }
+          </CreatePage.AnimationGrid>
+          <CreatePage.StepPreviewContainer>
+            <SequencePreviewer
+              sequence={sequence}
+              selectedStepIndex={animationStep}
+              onSelectStep={onSelectStep}
+            />
+          </CreatePage.StepPreviewContainer>
+        </CreatePage.AnimationGridContainer>
       </CreatePage.Container>
       <CreatePage.ControlsPanel>
         <CreatePage.ControlsHeader>
@@ -74,7 +97,7 @@ const CreatePage = () => {
         </CreatePage.ControlsHeader>
         <CreatePage.ControlsContent isExposed={areControlsExposed}>
           {selectedGridItem.row !== undefined && selectedGridItem.col !== undefined && (
-              <CreatePage.ControlPanelSection>
+            <CreatePage.ControlPanelSection>
               <CreatePage.ControlRow>
                 <CreatePage.ControlLabel>{`Placeholder Test`}</CreatePage.ControlLabel>
                 <CreatePage.Input
@@ -86,6 +109,25 @@ const CreatePage = () => {
               </CreatePage.ControlRow>
             </CreatePage.ControlPanelSection>
           )}
+          <CreatePage.ControlPanelSection>
+            <CreatePage.ControlRow>
+              <CreatePage.ControlLabel>{`Add Steps`}</CreatePage.ControlLabel>
+              <CreatePage.Button onClick={onAppendStep}>
+                Add New Step
+              </CreatePage.Button>
+            </CreatePage.ControlRow>
+            <CreatePage.ControlRow>
+              <CreatePage.ControlLabel>{`Navigate Steps`}</CreatePage.ControlLabel>
+              <CreatePage.Button
+              >
+                Back
+              </CreatePage.Button>
+              <CreatePage.Button
+              >
+                Next
+              </CreatePage.Button>
+            </CreatePage.ControlRow>
+          </CreatePage.ControlPanelSection>
         </CreatePage.ControlsContent>
       </CreatePage.ControlsPanel>
     </Layout>
@@ -99,12 +141,8 @@ CreatePage.Container = styled.div`
   align-items: center;
 `;
 
-CreatePage.AnimationGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(${p => p.cols ? p.cols : 1}, 1fr);
-  grid-template-rows: repeat(${p => p.rows ? p.rows : 1}, 1fr);
-  grid-gap: 1rem;
-  padding: .25rem;
+CreatePage.AnimationGridContainer = styled.div`
+  position: relative;
 
   @media screen and (orientation: landscape) {
     height: ${(p) => (p.smallMode ? '80vh' : '80vh')};
@@ -117,10 +155,18 @@ CreatePage.AnimationGrid = styled.div`
   }
 `;
 
+CreatePage.AnimationGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(${p => p.cols ? p.cols : 1}, 1fr);
+  grid-template-rows: repeat(${p => p.rows ? p.rows : 1}, 1fr);
+  grid-gap: 1rem;
+  height: 100%;
+  width: 100%;
+`;
+
 CreatePage.AnimationGridItem = styled.button`
   border: 1px solid ${p => p.isSelected ? "red": "white"};
   background: ${p => p.color};
-
   
   span {
     color: white;
@@ -206,6 +252,30 @@ CreatePage.Input = styled.input`
   text-align: center;
   border: 1px solid white;
   border-radius: 0;
+`;
+
+CreatePage.Button = styled.button`
+  background: ${(p) => (p.isSelected ? 'rgba(0, 0, 255, 0.37)' : 'none')};
+  color: white;
+  text-transform: capitalize;
+  border: 1px solid white;
+  padding: 0.5rem;
+  width: 100%;
+
+  &:disabled {
+    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+`;
+
+CreatePage.StepPreviewContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: -1rem;
+  transform: translateX(-100%);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1rem;
 `;
 
 export default CreatePage;
