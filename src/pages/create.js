@@ -1,16 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import Layout from "../components/layout";
 import Seo from "../components/seo";
 
 const CreatePage = () => {
+  const rows = 3;
+  const cols = 3;
+  const animationStep = 0;
+
+  const createEmptyMatrix = (rows, cols) => [...new Array(rows)].map(() => new Array(cols));
+  
+  const getColorForGridItem = (row, col) => sequence[animationStep][row][col];
+
+  const setColorForGridItem = (row, col, color) => {
+    const newSequence = [...sequence];
+    newSequence[animationStep][row][col] = color;
+    setSequence(newSequence);
+  };
+
   const [areControlsExposed, setAreControlsExposed] = useState(true);
+
+  const [sequence, setSequence] = useState([createEmptyMatrix(rows, cols)]);
+
+  const [selectedGridItem, setSelectedGridItem] = useState({row: undefined, col: undefined});
 
   const onToggleControls = () => setAreControlsExposed(!areControlsExposed);
 
-  const rows = 5;
-  const cols = 5;
+  const onClickGridItem = (row, col) => {
+    console.log(row, col);
+    setAreControlsExposed(true);
+    setSelectedGridItem({row, col});
+  };
+
+  const onUpdateSelectedItemColor = (event) => {
+    const color = event.target.value;
+    console.log('Color', color);
+    const {row: selectedRow, col: selectedCol} = selectedGridItem;
+    setColorForGridItem(selectedRow, selectedCol, color);
+  };
 
   return (
     <Layout>
@@ -18,9 +46,23 @@ const CreatePage = () => {
       <CreatePage.Container>
         <CreatePage.AnimationGrid rows={rows} cols={cols}>
           {
-            [...new Array(rows * cols)].map((_, idx) => (
-              <p>{`[${Math.floor(idx / rows)}, ${idx % cols}]`}</p>
-            ))
+            [...new Array(rows * cols)].map((_, idx) => {
+              const row = Math.floor(idx / rows);
+              const col = idx % cols;
+              const positionText = `[${row}, ${col}]`;
+              const isSelected = selectedGridItem.row === row && selectedGridItem.col === col;
+
+              return (
+                <CreatePage.AnimationGridItem
+                  key={positionText}
+                  color={getColorForGridItem(row, col)}
+                  isSelected={isSelected} 
+                  onClick={() => onClickGridItem(row, col)}
+                >
+                  <span>{positionText}</span>
+                </CreatePage.AnimationGridItem>
+              );
+            })
           }
         </CreatePage.AnimationGrid>
       </CreatePage.Container>
@@ -31,6 +73,21 @@ const CreatePage = () => {
             {areControlsExposed ? '–' : '+'}
           </CreatePage.ControlsHeaderButton>
         </CreatePage.ControlsHeader>
+        <CreatePage.ControlsContent isExposed={areControlsExposed}>
+          {selectedGridItem.row !== undefined && selectedGridItem.col !== undefined && (
+              <CreatePage.ControlPanelSection>
+              <CreatePage.ControlRow>
+                <CreatePage.ControlLabel>{`Placeholder Test`}</CreatePage.ControlLabel>
+                <CreatePage.Input
+                  type="color"
+                  autoComplete="off"
+                  value={getColorForGridItem(selectedGridItem.row, selectedGridItem.col)}
+                  onChange={onUpdateSelectedItemColor}
+                />
+              </CreatePage.ControlRow>
+            </CreatePage.ControlPanelSection>
+          )}
+        </CreatePage.ControlsContent>
       </CreatePage.ControlsPanel>
     </Layout>
   );
@@ -58,6 +115,17 @@ CreatePage.AnimationGrid = styled.div`
   @media screen and (orientation: portrait) {
     height: ${(p) => (p.smallMode ? '80vw' : '100vw')};;
     width: ${(p) => (p.smallMode ? '80vw' : '100vw')};;
+  }
+`;
+
+CreatePage.AnimationGridItem = styled.button`
+  border: 1px solid ${p => p.isSelected ? "red": "white"};
+  background: ${p => p.color};
+
+  
+  span {
+    color: white;
+    mix-blend-mode: difference;
   }
 `;
 
@@ -102,6 +170,43 @@ CreatePage.ControlsPanel = styled.div`
   color: white;
   font-size: 1rem;
   font-weight: bold;
+`;
+
+CreatePage.ControlsContent = styled.div`
+  display: ${(p) => (p.isExposed ? 'block' : 'none')};
+  overflow-y: scroll;
+`;
+
+CreatePage.ControlPanelSection = styled.div`
+  padding: 0.5rem;
+`;
+
+CreatePage.ControlRow = styled.div`
+  display: flex;
+  font-size: 0.75rem;
+  flex-direction: column;
+  margin: 0.5rem 0;
+
+  :last-child {
+    margin-bottom: 0;
+  }
+`;
+
+CreatePage.ControlLabel = styled.div`
+  margin-bottom: 0.5rem;
+`;
+
+CreatePage.Input = styled.input`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background: transparent;
+  outline: none;
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid white;
+  border-radius: 0;
 `;
 
 export default CreatePage;
