@@ -116,17 +116,6 @@ const CreatePage = () => {
                 Add New Step
               </CreatePage.Button>
             </CreatePage.ControlRow>
-            <CreatePage.ControlRow>
-              <CreatePage.ControlLabel>{`Navigate Steps`}</CreatePage.ControlLabel>
-              <CreatePage.Button
-              >
-                Back
-              </CreatePage.Button>
-              <CreatePage.Button
-              >
-                Next
-              </CreatePage.Button>
-            </CreatePage.ControlRow>
           </CreatePage.ControlPanelSection>
         </CreatePage.ControlsContent>
       </CreatePage.ControlsPanel>
