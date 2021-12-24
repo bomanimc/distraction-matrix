@@ -1,0 +1,46 @@
+export const SET_SEQUENCE = 'animator/SET_SEQUENCE';
+export const setSequence = sequence => async dispatch => {
+  await dispatch({
+    type: SET_SEQUENCE,
+    sequence,
+  });
+};
+
+export const SET_COLOR_FOR_GRID_ITEM = 'animator/SET_COLOR_FOR_GRID_ITEM';
+export const setColorForGridItem = color => async dispatch => {
+  await dispatch({
+    type: SET_COLOR_FOR_GRID_ITEM,
+    color,
+  });
+};
+
+export const SET_ANIMATION_STEP = 'animator/SET_ANIMATION_STEP';
+export const setAnimationStep = step => async dispatch => {
+  await dispatch({
+    type: SET_ANIMATION_STEP,
+    step,
+  });
+};
+
+export const APPEND_ANIMATION_STEP = 'animator/APPEND_ANIMATION_STEP';
+export const appendAnimationStep = () => async dispatch => {
+  await dispatch({
+    type: APPEND_ANIMATION_STEP,
+  });
+};
+
+export const SET_CONTROLS_EXPOSED = 'animator/SET_CONTROLS_EXPOSED';
+export const setControlsExposed = areExposed => async dispatch => {
+  await dispatch({
+    type: SET_CONTROLS_EXPOSED,
+    areExposed,
+  });
+};
+
+export const SET_SELECTED_GRID_ITEM = 'animator/SET_SELECTED_GRID_ITEM';
+export const setSelectedGridItem = gridItem => async dispatch => {
+  await dispatch({
+    type: SET_SELECTED_GRID_ITEM,
+    gridItem,
+  });
+};

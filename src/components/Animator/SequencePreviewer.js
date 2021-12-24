@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from 'react-redux';
 
-const SequencePreviewer = ({ sequence, selectedStepIndex, onSelectStep }) => {
+import { setAnimationStep } from "./actions";
+
+const SequencePreviewer = () => {
+  const dispatch = useDispatch();
+  const sequence = useSelector(state => state.animator.sequence);
+  const animationStep = useSelector(state => state.animator.animationStep);
+  const rows = useSelector(state => state.animator.rows);
+  const cols = useSelector(state => state.animator.cols);
+
   if (!sequence) {
     return null;
   }
 
-  const rows = sequence[0].length;
-  const cols = sequence[0][0].length;
+  const onSelectStep = (stepIndex) => {
+    dispatch(setAnimationStep(stepIndex));
+  };
 
   return sequence.map((step, idx) => {
     return (
       <SequencePreviewer.Preview 
         rows={rows}
         cols={cols} 
-        isSelected={selectedStepIndex === idx}
+        isSelected={animationStep === idx}
         onClick={() => onSelectStep(idx)}
       >
         {

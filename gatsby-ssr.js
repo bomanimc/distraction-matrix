@@ -1,7 +1,4 @@
-/**
- * Implement Gatsby's SSR (Server Side Rendering) APIs in this file.
- *
- * See: https://www.gatsbyjs.com/docs/ssr-apis/
- */
+/* eslint-disable import/prefer-default-export */
+import wrapWithProvider from './wrap-with-provider';
 
-// You can delete this file if you're not using it
+export const wrapRootElement = wrapWithProvider;
