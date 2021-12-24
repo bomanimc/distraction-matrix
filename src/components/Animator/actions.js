@@ -29,6 +29,13 @@ export const appendAnimationStep = () => async dispatch => {
   });
 };
 
+export const INCREMENT_ANIMATION_STEP = 'animator/INCREMENT_ANIMATION_STEP';
+export const incrementAnimationStep = () => async dispatch => {
+  await dispatch({
+    type: INCREMENT_ANIMATION_STEP,
+  });
+};
+
 export const SET_CONTROLS_EXPOSED = 'animator/SET_CONTROLS_EXPOSED';
 export const setControlsExposed = areExposed => async dispatch => {
   await dispatch({
@@ -44,3 +51,12 @@ export const setSelectedGridItem = gridItem => async dispatch => {
     gridItem,
   });
 };
+
+export const SET_IS_PLAYING = 'animator/SET_IS_PLAYING';
+export const setIsPlaying = isPlaying => async dispatch => {
+  await dispatch({
+    type: SET_IS_PLAYING,
+    isPlaying,
+  });
+};
+

@@ -6,6 +6,7 @@ export default {
   animator: {
     ...defaultDimensions,
     areControlsExposed: true,
+    isPlaying: false,
     sequence: [createEmptyMatrix(defaultDimensions.rows, defaultDimensions.cols)],
     selectedGridItem: {row: undefined, col: undefined},
     animationStep: 0,

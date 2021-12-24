@@ -3,10 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from "styled-components";
 
 import SequencePreviewer from "./SequencePreviewer";
+import useInterval from '../../hooks/useInterval';
 import {
   appendAnimationStep,
+  incrementAnimationStep,
   setColorForGridItem,
   setControlsExposed,
+  setIsPlaying,
   setSelectedGridItem,
 } from "./actions";
 
@@ -16,19 +19,24 @@ const Animator = () => {
   const selectedGridItem = useSelector(state => state.animator.selectedGridItem);
   const areControlsExposed = useSelector(state => state.animator.areControlsExposed);
   const animationStep = useSelector(state => state.animator.animationStep);
+  const isPlaying = useSelector(state => state.animator.isPlaying);
   const rows = useSelector(state => state.animator.rows);
   const cols = useSelector(state => state.animator.cols);
 
-  const getColorForGridItem = (row, col) => {
-    console.log('Sequence', sequence);
-    console.log('Animation Step', animationStep);
-    console.log('Row', row);
-    console.log('Col', col);
-    console.log('sequence[animationStep]', sequence[animationStep]);
-    console.log('sequence[animationStep][row]', sequence[animationStep][row]);
-    
-    return sequence[animationStep][row][col];
-  };
+  useInterval(
+    () => {
+      if (sequence.length === 0) {
+        return;
+      }
+
+      dispatch(incrementAnimationStep());
+    },
+
+    // TODO: Can set to null to stop the progression (useful for Pause button).
+    isPlaying ? 1000 : null,
+  );
+
+  const getColorForGridItem = (row, col) => sequence[animationStep][row][col];
 
   const onToggleControls = () => setControlsExposed(!areControlsExposed);
 
@@ -43,6 +51,10 @@ const Animator = () => {
 
   const onAppendStep = () => {
     dispatch(appendAnimationStep());
+  };
+
+  const toggleIsPlaying = () => {
+    dispatch(setIsPlaying(!isPlaying));
   };
 
   return (
@@ -101,6 +113,14 @@ const Animator = () => {
               <Animator.ControlLabel>{`Add Steps`}</Animator.ControlLabel>
               <Animator.Button onClick={onAppendStep}>
                 Add New Step
+              </Animator.Button>
+            </Animator.ControlRow>
+          </Animator.ControlPanelSection>
+          <Animator.ControlPanelSection>
+            <Animator.ControlRow>
+              <Animator.ControlLabel>{`View Animation`}</Animator.ControlLabel>
+              <Animator.Button onClick={toggleIsPlaying}>
+                {isPlaying ? "Pause" : "Play"}
               </Animator.Button>
             </Animator.ControlRow>
           </Animator.ControlPanelSection>

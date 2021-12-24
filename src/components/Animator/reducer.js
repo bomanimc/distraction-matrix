@@ -45,11 +45,25 @@ export default (state = initialState.animator, action) => {
         sequence: newSequence,
       }
     }
+    case actions.INCREMENT_ANIMATION_STEP: {
+      const { animationStep, sequence } = state;
+
+      return {
+        ...state,
+        animationStep: (animationStep + 1) % sequence.length,
+      };
+    }
     case actions.SET_SELECTED_GRID_ITEM: {
       return {
         ...state,
         selectedGridItem: {...action.gridItem},
         areControlsExposed: true,
+      };
+    }
+    case actions.SET_IS_PLAYING: {
+      return {
+        ...state,
+        isPlaying: action.isPlaying,
       };
     }
     default:
