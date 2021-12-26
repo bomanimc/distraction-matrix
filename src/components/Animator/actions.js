@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const SET_SEQUENCE = 'animator/SET_SEQUENCE';
 export const setSequence = sequence => async dispatch => {
   await dispatch({
@@ -60,3 +62,17 @@ export const setIsPlaying = isPlaying => async dispatch => {
   });
 };
 
+export const UPLOAD_SEQUENCE = 'animator/UPLOAD_SEQUENCE';
+export const uploadSequence = sequence => async dispatch => {
+  axios.post('http://localhost:3000/api/upload', {
+    data: {
+      sequence,
+    },
+  })
+  .then((response) =>  {
+    console.log(response);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+};

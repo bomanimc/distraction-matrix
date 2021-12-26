@@ -1,14 +1,20 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: `Distraction Matrix`,
+    description: `Distraction Matrix tooling`,
+    author: `@bomanimc`,
     siteUrl: `https://gatsbystarterdefaultsource.gatsbyjs.io/`,
   },
-  proxy: {
-    prefix: "/socket",
-    url: "http://192.168.1.205:3000/",
-  },
+  proxy: [
+    {
+      prefix: "/socket",
+      url: "http://192.168.1.205:3000/",
+    },
+    {
+      prefix: "/api",
+      url: "http://localhost:3000/",
+    },
+  ],
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,

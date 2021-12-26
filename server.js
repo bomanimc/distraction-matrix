@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
+const cors = require('cors');
+
 const io = require('socket.io')(http, {
   cors: {
     origin: ['http://localhost:8000', 'http://192.168.1.205:8000'],
@@ -8,6 +10,11 @@ const io = require('socket.io')(http, {
     credentials: true,
   },
 });
+
+app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:8000',
+}));
 app.use(express.static(__dirname + '/public'));
 
 const port = process.env.PORT || 3000;
@@ -15,12 +22,21 @@ const env = process.env.NODE_ENV || 'development';
 
 let animationInterval;
 let sequenceIndex = 0;
-const sequence = [
+// TODO: Consider initializing with a test pattern.
+let sequence = [
   [["#fc5c65", "#fd9644", "#fed330", "#26de81"], ["yellow", "orange", "pink"]],
   [["#26de81", "#fc5c65", "#fd9644", "#fed330"], ["orange", "pink", "yellow"]],
   [["#fed330", "#26de81", "#fc5c65", "#fd9644"], ["orange", "pink", "yellow"]],
   [["#fd9644", "#fed330", "#26de81", "#fc5c65"], ["orange", "pink", "yellow"]],
 ];
+
+app.post('/api/upload', (req, res) => {
+  const { sequence: uploadedSequence } = req.body.data;
+  console.log("UPLOAD", uploadedSequence);
+  sequence = uploadedSequence;
+
+  res.sendStatus(200);
+});
 
 app.get('*', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -39,12 +55,6 @@ io.on('connection', (socket) => {
   socket.on('connectedPosition', (data) => {
     const {row, col} = data;
     console.log(`Connected: r: ${row} c: ${col}`)
-  });
-
-  socket.on('prediction', (data) => {
-    console.log(data);
-    // lastPrediction = data;
-    // socket.broadcast.emit('prediction', data);
   });
   
   // TODO: Pull sequence data from frontend

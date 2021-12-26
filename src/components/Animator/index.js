@@ -11,6 +11,7 @@ import {
   setControlsExposed,
   setIsPlaying,
   setSelectedGridItem,
+  uploadSequence,
 } from "./actions";
 
 const Animator = () => {
@@ -53,9 +54,11 @@ const Animator = () => {
     dispatch(appendAnimationStep());
   };
 
-  const toggleIsPlaying = () => {
+  const onToggleIsPlaying = () => {
     dispatch(setIsPlaying(!isPlaying));
   };
+
+  const onUploadSequence = () => dispatch(uploadSequence(sequence));
 
   return (
     <>
@@ -119,8 +122,16 @@ const Animator = () => {
           <Animator.ControlPanelSection>
             <Animator.ControlRow>
               <Animator.ControlLabel>{`View Animation`}</Animator.ControlLabel>
-              <Animator.Button onClick={toggleIsPlaying}>
+              <Animator.Button onClick={onToggleIsPlaying}>
                 {isPlaying ? "Pause" : "Play"}
+              </Animator.Button>
+            </Animator.ControlRow>
+          </Animator.ControlPanelSection>
+          <Animator.ControlPanelSection>
+            <Animator.ControlRow>
+              <Animator.ControlLabel>{`Server Interaction`}</Animator.ControlLabel>
+              <Animator.Button onClick={onUploadSequence}>
+                Upload Sequence
               </Animator.Button>
             </Animator.ControlRow>
           </Animator.ControlPanelSection>

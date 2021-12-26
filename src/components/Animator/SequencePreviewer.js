@@ -21,7 +21,8 @@ const SequencePreviewer = () => {
 
   return sequence.map((step, idx) => {
     return (
-      <SequencePreviewer.Preview 
+      <SequencePreviewer.Preview
+        key={idx}
         rows={rows}
         cols={cols} 
         isSelected={animationStep === idx}
