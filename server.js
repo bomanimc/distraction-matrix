@@ -29,6 +29,13 @@ let sequence = [
   [["#fed330", "#26de81", "#fc5c65", "#fd9644"], ["orange", "pink", "yellow"]],
   [["#fd9644", "#fed330", "#26de81", "#fc5c65"], ["orange", "pink", "yellow"]],
 ];
+const connectedPositions = {};
+
+const addConnectedPosition = (r, c) => 
+  connectedPositions[`${r}-${c}`] = `${r}-${c}` in connectedPositions ? connectedPositions[`${r}-${c}`] + 1 : 1;
+
+const removeConnectedPosition = (r, c) => 
+  connectedPositions[`${r}-${c}`] = `${r}-${c}` in connectedPositions ? connectedPositions[`${r}-${c}`] - 1 : 0;
 
 app.post('/api/upload', (req, res) => {
   const { sequence: uploadedSequence } = req.body.data;
@@ -51,10 +58,18 @@ http.listen(port, (err) => {
 io.on('connection', (socket) => {
   console.log('Someone connected');
 
-  // TODO: Update creator UI with list of connected pixels.
   socket.on('connectedPosition', (data) => {
     const {row, col} = data;
-    console.log(`Connected: r: ${row} c: ${col}`)
+    console.log(`Connected: r: ${row} c: ${col}`);
+    addConnectedPosition(row, col);
+    console.log("connectedPositions", connectedPositions);
+  });
+
+  socket.on('disconnectedPosition', (data) => {
+    const {row, col} = data;
+    console.log(`Disconnected: r: ${row} c: ${col}`);
+    removeConnectedPosition(row, col);
+    console.log("connectedPositions", connectedPositions);
   });
   
   // TODO: Pull sequence data from frontend

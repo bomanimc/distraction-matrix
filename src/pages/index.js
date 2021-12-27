@@ -14,12 +14,22 @@ const IndexPage = ({ location }) => {
   const rowIndex = parseInt(params.get("r"));
   const colIndex = parseInt(params.get("c"));
 
+  const onDisconnect = () => {
+    socket.off('newFrame');
+    socket.emit("disconnectedPosition", {row: rowIndex, col: colIndex});
+    socket.disconnect();
+  }
+
   useEffect(() => {
     console.log("Use effect", socket);
-    return () => socket.off('newFrame');
+    window.addEventListener('beforeunload', onDisconnect);
+
+    return () => {
+      window.removeEventListener('beforeunload', onDisconnect);
+    };
   }, []);
 
-  socket.on("connect", () => {
+  socket.once("connect", () => {
     console.log("Connected!");
     socket.emit("connectedPosition", {row: rowIndex, col: colIndex});
   });
