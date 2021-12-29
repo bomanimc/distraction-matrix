@@ -62,6 +62,14 @@ export const setIsPlaying = isPlaying => async dispatch => {
   });
 };
 
+export const SET_CONNECTED_POSITIONS = 'animator/SET_CONNECTED_POSITIONS';
+export const setConnectedPositions = connectedPositions => async dispatch => {
+  await dispatch({
+    type: SET_CONNECTED_POSITIONS,
+    connectedPositions,
+  });
+};
+
 export const UPLOAD_SEQUENCE = 'animator/UPLOAD_SEQUENCE';
 export const uploadSequence = sequence => async dispatch => {
   axios.post('http://localhost:3000/api/upload', {

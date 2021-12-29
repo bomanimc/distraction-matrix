@@ -66,6 +66,12 @@ export default (state = initialState.animator, action) => {
         isPlaying: action.isPlaying,
       };
     }
+    case actions.SET_CONNECTED_POSITIONS: {
+      return {
+        ...state,
+        connectedPositions: action.connectedPositions,
+      };
+    }
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { io } from "socket.io-client";
 
@@ -14,17 +14,18 @@ const IndexPage = ({ location }) => {
   const rowIndex = parseInt(params.get("r"));
   const colIndex = parseInt(params.get("c"));
 
-  const onDisconnect = () => {
+  const onDisconnect = useCallback(() => () => {
     socket.off('newFrame');
     socket.emit("disconnectedPosition", {row: rowIndex, col: colIndex});
     socket.disconnect();
-  }
+  });
 
   useEffect(() => {
     console.log("Use effect", socket);
     window.addEventListener('beforeunload', onDisconnect);
 
     return () => {
+      onDisconnect();
       window.removeEventListener('beforeunload', onDisconnect);
     };
   }, []);

@@ -23,6 +23,7 @@ const Animator = () => {
   const isPlaying = useSelector(state => state.animator.isPlaying);
   const rows = useSelector(state => state.animator.rows);
   const cols = useSelector(state => state.animator.cols);
+  const connectedPositions = useSelector(state => state.animator.connectedPositions);
 
   useInterval(
     () => {
@@ -39,7 +40,7 @@ const Animator = () => {
 
   const getColorForGridItem = (row, col) => sequence[animationStep][row][col];
 
-  const onToggleControls = () => setControlsExposed(!areControlsExposed);
+  const onToggleControls = () => dispatch(setControlsExposed(!areControlsExposed));
 
   const onClickGridItem = (row, col) => {
     dispatch(setSelectedGridItem({row, col}));
@@ -71,6 +72,7 @@ const Animator = () => {
                 const col = idx % cols;
                 const positionText = `[${row}, ${col}]`;
                 const isSelected = selectedGridItem.row === row && selectedGridItem.col === col;
+                const isOnline = !!connectedPositions[`${row}-${col}`];
 
                 return (
                   <Animator.AnimationGridItem
@@ -80,6 +82,7 @@ const Animator = () => {
                     onClick={() => onClickGridItem(row, col)}
                   >
                     <span>{positionText}</span>
+                    <Animator.AnimationGridItemOnlineStatus isOnline={isOnline} />
                   </Animator.AnimationGridItem>
                 );
               })
@@ -174,11 +177,23 @@ Animator.AnimationGrid = styled.div`
 Animator.AnimationGridItem = styled.button`
   border: 1px solid ${p => p.isSelected ? "red": "white"};
   background: ${p => p.color};
+  position: relative;
   
   span {
     color: white;
     mix-blend-mode: difference;
   }
+`;
+
+Animator.AnimationGridItemOnlineStatus = styled.div`
+  border-radius: 50%;
+  border: 1px solid white;
+  width: 0.5rem;
+  height: 0.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: ${p => p.isOnline ? '#2ecc71': 'none'};
 `;
 
 // TODO: The following should be moved to system.

@@ -58,10 +58,17 @@ http.listen(port, (err) => {
 io.on('connection', (socket) => {
   console.log('Someone connected');
 
+  socket.on('connectAnimator', () => {
+    console.log("Connected an animator");
+    socket.join("animators");
+    socket.emit("connectedPositions", {connectedPositions});
+  });
+
   socket.on('connectedPosition', (data) => {
     const {row, col} = data;
     console.log(`Connected: r: ${row} c: ${col}`);
     addConnectedPosition(row, col);
+    socket.to("animators").emit("connectedPositions", {connectedPositions});
     console.log("connectedPositions", connectedPositions);
   });
 
@@ -69,6 +76,7 @@ io.on('connection', (socket) => {
     const {row, col} = data;
     console.log(`Disconnected: r: ${row} c: ${col}`);
     removeConnectedPosition(row, col);
+    socket.to("animators").emit({connectedPositions});
     console.log("connectedPositions", connectedPositions);
   });
   
