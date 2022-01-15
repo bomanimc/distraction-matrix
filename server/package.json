@@ -1,12 +1,13 @@
 {
-  "name": "server",
+  "name": "distraction-matrix-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "DISTRACTION MATRIX",
+  "author": "Bomani Oseni McClendon",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
