@@ -7,7 +7,7 @@ import Seo from "../components/seo";
 import Animator from "../components/Animator";
 import { setConnectedPositions } from "../components/Animator/actions";
 
-const socket = io("http://localhost:3000");
+const socket = io(process.env.GATSBY_SOCKET_SERVER_URL);
 
 const CreatePage = () => {
   const dispatch = useDispatch();

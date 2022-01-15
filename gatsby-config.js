@@ -1,3 +1,7 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
+
 module.exports = {
   siteMetadata: {
     title: `Distraction Matrix`,
@@ -7,12 +11,8 @@ module.exports = {
   },
   proxy: [
     {
-      prefix: "/socket",
-      url: "http://192.168.1.205:3000/",
-    },
-    {
       prefix: "/api",
-      url: "http://localhost:3000/",
+      url: process.env.GATSBY_SOCKET_SERVER_URL,
     },
   ],
   plugins: [

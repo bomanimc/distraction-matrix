@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import Layout from "../components/layout";
 import Seo from "../components/seo";
 
-const socket = io("http://localhost:3000");
+const socket = io(process.env.GATSBY_SOCKET_SERVER_URL);
 
 const IndexPage = ({ location }) => {
   const [color, setColor] = useState(undefined);

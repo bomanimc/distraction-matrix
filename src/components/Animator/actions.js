@@ -72,7 +72,7 @@ export const setConnectedPositions = connectedPositions => async dispatch => {
 
 export const UPLOAD_SEQUENCE = 'animator/UPLOAD_SEQUENCE';
 export const uploadSequence = sequence => async dispatch => {
-  axios.post('http://localhost:3000/api/upload', {
+  axios.post('/api/upload', {
     data: {
       sequence,
     },
