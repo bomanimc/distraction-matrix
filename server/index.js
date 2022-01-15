@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const cors = require('cors');
+require('dotenv').config();
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: ['http://localhost:8000', 'http://192.168.1.205:8000'],
+    origin: process.env.CLIENT_URL || 'http://localhost:8000',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -13,7 +14,7 @@ const io = require('socket.io')(http, {
 
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:8000',
+  origin: process.env.CLIENT_URL || 'http://localhost:8000',
 }));
 app.use(express.static(__dirname + '/public'));
 
