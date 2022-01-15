@@ -46,7 +46,7 @@ app.post('/api/upload', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.send({sequence});
 });
 
 http.listen(port, (err) => {
